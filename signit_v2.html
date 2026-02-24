@@ -1,0 +1,950 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SignIt — Petitions That Matter</title>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --bg: #F6F5F0;
+  --surface: #FFFFFF;
+  --surface2: #EEEDE7;
+  --border: #DDD9CF;
+  --text: #1A1916;
+  --text-muted: #6B6860;
+  --accent: #2A6B4F;
+  --accent-light: #E6F1EC;
+  --accent-dark: #1D4D39;
+  --accent-mid: #3D8B66;
+  --mint: #48BB78;
+  --radius: 14px;
+  --radius-sm: 8px;
+  --shadow: 0 1px 4px rgba(0,0,0,0.05), 0 4px 20px rgba(0,0,0,0.04);
+  --shadow-lg: 0 8px 40px rgba(0,0,0,0.1);
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 15px;
+  line-height: 1.6;
+  overflow-x: hidden;
+}
+
+/* ─── DECORATIVE BG PATTERN ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(42,107,79,0.07) 0%, transparent 45%),
+    radial-gradient(circle at 85% 75%, rgba(72,187,120,0.06) 0%, transparent 40%),
+    radial-gradient(circle at 55% 50%, rgba(42,107,79,0.03) 0%, transparent 60%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+body > * { position: relative; z-index: 1; }
+
+/* ─── NAV ─── */
+nav {
+  background: rgba(255,255,255,0.88);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-bottom: 1px solid var(--border);
+  padding: 0 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 64px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.logo-img { height: 38px; width: auto; display: block; }
+
+.nav-actions { display: flex; gap: 10px; align-items: center; }
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 9px 20px;
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  transition: all 0.18s ease;
+  text-decoration: none;
+  letter-spacing: 0.1px;
+}
+
+.btn-ghost { background: transparent; color: var(--text-muted); }
+.btn-ghost:hover { background: var(--surface2); color: var(--text); }
+
+.btn-primary { background: var(--accent); color: white; }
+.btn-primary:hover { background: var(--accent-dark); transform: translateY(-1px); box-shadow: 0 4px 14px rgba(42,107,79,0.35); }
+
+.btn-outline { background: transparent; border: 1.5px solid var(--border); color: var(--text); }
+.btn-outline:hover { border-color: var(--accent); color: var(--accent); background: var(--accent-light); }
+
+/* ─── HERO ─── */
+.hero-wrap {
+  position: relative;
+  padding: 80px 24px 64px;
+  text-align: center;
+  overflow: hidden;
+}
+
+/* Floating decorative circles */
+.deco-circle {
+  position: absolute;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: floatDeco 8s ease-in-out infinite alternate;
+}
+.deco-circle-1 { width: 380px; height: 380px; background: radial-gradient(circle, rgba(42,107,79,0.09), transparent 70%); top: -120px; left: -80px; animation-delay: 0s; }
+.deco-circle-2 { width: 280px; height: 280px; background: radial-gradient(circle, rgba(72,187,120,0.1), transparent 70%); top: -60px; right: -60px; animation-delay: 2s; }
+.deco-circle-3 { width: 200px; height: 200px; background: radial-gradient(circle, rgba(42,107,79,0.07), transparent 70%); bottom: 0; left: 30%; animation-delay: 4s; }
+
+@keyframes floatDeco {
+  from { transform: translateY(0px) scale(1); }
+  to { transform: translateY(-20px) scale(1.05); }
+}
+
+/* Grid dot texture */
+.hero-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(42,107,79,0.15) 1px, transparent 1px);
+  background-size: 28px 28px;
+  opacity: 0.4;
+  pointer-events: none;
+}
+
+.hero-inner {
+  position: relative;
+  max-width: 640px;
+  margin: 0 auto;
+  animation: fadeUp 0.6s ease both;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.hero-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--accent-light);
+  color: var(--accent);
+  font-size: 12px;
+  font-weight: 600;
+  padding: 6px 16px;
+  border-radius: 100px;
+  margin-bottom: 24px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  border: 1px solid rgba(42,107,79,0.2);
+}
+
+.hero h1 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(42px, 7vw, 64px);
+  line-height: 1.08;
+  margin-bottom: 18px;
+  letter-spacing: -0.5px;
+  color: var(--text);
+}
+
+.hero h1 em {
+  font-style: italic;
+  background: linear-gradient(135deg, var(--accent), var(--mint));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.hero-sub {
+  font-size: 18px;
+  color: var(--text-muted);
+  font-weight: 300;
+  margin-bottom: 36px;
+  max-width: 480px;
+  margin-left: auto;
+  margin-right: auto;
+  line-height: 1.65;
+}
+
+.hero-ctas { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 48px; }
+
+/* ─── TRUST BADGES ─── */
+.trust-row {
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  flex-wrap: wrap;
+}
+
+.trust-badge {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+.trust-badge span.dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--mint);
+  display: inline-block;
+  animation: pulse 2.5s ease-in-out infinite;
+}
+
+.trust-badge:nth-child(2) span.dot { animation-delay: 0.5s; }
+.trust-badge:nth-child(3) span.dot { animation-delay: 1s; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(0.8); }
+}
+
+/* ─── DIVIDER ─── */
+.section-divider {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--border) 20%, var(--border) 80%, transparent);
+  margin: 0;
+}
+
+/* ─── HOW IT WORKS ─── */
+.how-wrap {
+  padding: 72px 24px;
+  max-width: 920px;
+  margin: 0 auto;
+  animation: fadeUp 0.6s ease both 0.1s;
+}
+
+.section-label {
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.2px;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+
+.section-heading {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(26px, 4vw, 38px);
+  text-align: center;
+  margin-bottom: 52px;
+  color: var(--text);
+}
+
+.steps-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px;
+}
+
+.step-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 28px 24px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: transform 0.2s, box-shadow 0.2s;
+  position: relative;
+  overflow: hidden;
+}
+
+.step-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--accent), var(--mint));
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.step-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.step-card:hover::before { opacity: 1; }
+
+.step-icon {
+  width: 54px; height: 54px;
+  border-radius: 14px;
+  background: var(--accent-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  margin: 0 auto 16px;
+}
+
+.step-num {
+  position: absolute;
+  top: 16px; right: 16px;
+  font-family: 'Instrument Serif', serif;
+  font-size: 36px;
+  color: var(--border);
+  line-height: 1;
+}
+
+.step-title {
+  font-weight: 600;
+  font-size: 15px;
+  margin-bottom: 8px;
+  color: var(--text);
+}
+
+.step-desc {
+  font-size: 13px;
+  color: var(--text-muted);
+  line-height: 1.6;
+}
+
+/* ─── WHAT MAKES US DIFFERENT ─── */
+.diff-wrap {
+  background: var(--accent);
+  padding: 72px 24px;
+  position: relative;
+  overflow: hidden;
+}
+
+.diff-wrap::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+  background-size: 24px 24px;
+  pointer-events: none;
+}
+
+.diff-wrap::after {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255,255,255,0.08), transparent 70%);
+  pointer-events: none;
+}
+
+.diff-inner {
+  max-width: 860px;
+  margin: 0 auto;
+  position: relative;
+}
+
+.diff-wrap .section-label { color: var(--mint); }
+.diff-wrap .section-heading { color: white; }
+
+.diff-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 16px;
+}
+
+.diff-item {
+  background: rgba(255,255,255,0.08);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: var(--radius);
+  padding: 22px 20px;
+  backdrop-filter: blur(8px);
+  transition: background 0.2s;
+}
+
+.diff-item:hover { background: rgba(255,255,255,0.13); }
+
+.diff-icon { font-size: 26px; margin-bottom: 12px; }
+.diff-title { font-weight: 600; color: white; font-size: 15px; margin-bottom: 6px; }
+.diff-desc { font-size: 13px; color: rgba(255,255,255,0.7); line-height: 1.6; }
+
+/* ─── EMPTY STATE ─── */
+.empty-wrap {
+  padding: 80px 24px;
+  max-width: 1100px;
+  margin: 0 auto;
+}
+
+.empty-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  margin-bottom: 32px;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.empty-title {
+  font-family: 'Instrument Serif', serif;
+  font-size: 28px;
+}
+
+.empty-sub {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-top: 4px;
+}
+
+.filter-tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 28px;
+  overflow-x: auto;
+  padding-bottom: 4px;
+}
+
+.tab {
+  padding: 8px 18px;
+  border-radius: 100px;
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1.5px solid var(--border);
+  background: var(--surface);
+  color: var(--text-muted);
+  white-space: nowrap;
+  transition: all 0.15s;
+}
+
+.tab:hover { border-color: var(--accent); color: var(--accent); }
+.tab.active { background: var(--accent); border-color: var(--accent); color: white; }
+
+/* Empty state card */
+.empty-state {
+  background: var(--surface);
+  border: 2px dashed var(--border);
+  border-radius: 20px;
+  padding: 80px 40px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.empty-state::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image: radial-gradient(circle, rgba(42,107,79,0.06) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+.empty-state-inner { position: relative; max-width: 420px; margin: 0 auto; }
+
+.empty-state-icon {
+  width: 80px; height: 80px;
+  background: var(--accent-light);
+  border-radius: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 36px;
+  margin: 0 auto 24px;
+  animation: bob 3s ease-in-out infinite;
+}
+
+@keyframes bob {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.empty-state h3 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 26px;
+  margin-bottom: 12px;
+}
+
+.empty-state p {
+  color: var(--text-muted);
+  font-size: 15px;
+  line-height: 1.65;
+  margin-bottom: 28px;
+}
+
+/* ─── CTA SECTION ─── */
+.cta-section {
+  padding: 80px 24px;
+  text-align: center;
+  background: linear-gradient(180deg, var(--bg) 0%, white 100%);
+  border-top: 1px solid var(--border);
+}
+
+.cta-inner { max-width: 520px; margin: 0 auto; }
+
+.cta-section h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: clamp(28px, 4vw, 40px);
+  margin-bottom: 14px;
+}
+
+.cta-section h2 em {
+  font-style: italic;
+  color: var(--accent);
+}
+
+.cta-section p {
+  color: var(--text-muted);
+  font-size: 16px;
+  margin-bottom: 32px;
+  line-height: 1.65;
+}
+
+/* ─── MODAL ─── */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.5);
+  z-index: 200;
+  padding: 20px;
+  overflow-y: auto;
+  backdrop-filter: blur(6px);
+}
+
+.modal-overlay.open {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding-top: 48px;
+  animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+.modal {
+  background: var(--surface);
+  border-radius: 18px;
+  max-width: 620px;
+  width: 100%;
+  overflow: hidden;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.25s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(30px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+  padding: 28px 32px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.modal-header h2 {
+  font-family: 'Instrument Serif', serif;
+  font-size: 22px;
+}
+
+.modal-close {
+  width: 34px; height: 34px;
+  border-radius: 50%;
+  background: var(--surface2);
+  border: none;
+  cursor: pointer;
+  font-size: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  transition: all 0.15s;
+}
+
+.modal-close:hover { background: var(--border); color: var(--text); transform: rotate(90deg); }
+
+.modal-body { padding: 20px 32px 32px; }
+
+.form-group { margin-bottom: 16px; }
+
+.form-label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+
+.form-input {
+  width: 100%;
+  padding: 11px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  color: var(--text);
+  background: var(--bg);
+  transition: border-color 0.15s, box-shadow 0.15s;
+  resize: none;
+}
+
+.form-input:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(42,107,79,0.1);
+  background: white;
+}
+
+.form-input::placeholder { color: var(--text-muted); opacity: 0.7; }
+
+.explain-box {
+  background: #EEF5FF;
+  border: 1.5px solid #C4DAFF;
+  border-radius: var(--radius-sm);
+  padding: 16px;
+  margin-bottom: 16px;
+}
+
+.explain-label {
+  font-size: 11px;
+  font-weight: 700;
+  color: #2156B3;
+  text-transform: uppercase;
+  letter-spacing: 0.6px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 10px;
+  justify-content: flex-end;
+  margin-top: 6px;
+}
+
+/* ─── FOOTER ─── */
+footer {
+  background: var(--text);
+  color: rgba(255,255,255,0.5);
+  padding: 48px 32px;
+  font-size: 13px;
+}
+
+.footer-inner {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.footer-logo {
+  font-family: 'Instrument Serif', serif;
+  font-size: 20px;
+  color: white;
+}
+
+.footer-logo span { color: var(--mint); }
+
+.footer-links { display: flex; gap: 20px; }
+.footer-links a { color: rgba(255,255,255,0.4); text-decoration: none; transition: color 0.15s; }
+.footer-links a:hover { color: white; }
+
+/* ─── TOAST ─── */
+.toast {
+  position: fixed;
+  bottom: 32px;
+  left: 50%;
+  transform: translateX(-50%) translateY(80px);
+  background: var(--text);
+  color: white;
+  padding: 13px 24px;
+  border-radius: 100px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 500;
+  transition: transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+  white-space: nowrap;
+}
+
+.toast.show { transform: translateX(-50%) translateY(0); }
+
+/* ─── RESPONSIVE ─── */
+@media (max-width: 600px) {
+  nav { padding: 0 16px; }
+  .hero-wrap { padding: 60px 16px 48px; }
+  .empty-wrap { padding: 48px 16px; }
+  .empty-state { padding: 48px 20px; }
+  .modal-body { padding: 16px 20px 24px; }
+  .modal-header { padding: 20px 20px 0; }
+  .nav-login { display: none; }
+}
+</style>
+</head>
+<body>
+
+<!-- ─── NAV ─── -->
+<nav>
+  <img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAeAAAACgCAYAAADU+79NAAAoNklEQVR4nO3deVxU5f4H8M/MsAwIgoCAgAjixqIp4r5vmamBWbaplVZWaotey+6tvLanP7WbZou3m1aWtxUXLM0Nd4XrgoIKKoKAgLIoAsPAzPz+sLERZjmzz8Dn/Xr5Kmae8znPOYx+5znbIwIAlUolFYlEMpipcU7M7ESVKTmZq5I9Yuck1ZrbH+YwhznMYQ5zzM3J+mSjSGiOMfVUpFKppLd/MKMIa+aYszMyVyV7MIc5zGEOc5jjqDm6CrKx9VSkXsic4qse6TrTNxrmMIc5zGEOc8zJ0VaIjRoBG7Oyxkw9xExERNRcGHOIWpNJC7HwEhER3cnYQiw2dgUsvkRERE0ZWx+NKsAsvkRERLoZUycFDZdZeImIiIxj6JC0wREwiy8REZHxDNVPvQWYxZeIiMh0+uqo0RdhERERkfl0FmCOfomIiMynq55qLcAsvkRERJajra42KcAsvkRERJbXuL7yHDAREZEd3FGAOfolIiKyHs06yxEwERGRHdwuwBz9EhERWZ+63oqBOycRNofmpMbMYQ5zmMMc5jBHN5Fm8TVnUmPNlTKHOcxhDnOYwxz9xCKRSGbuSjWXZw5zmMMc5jCHOYaJAJ7/JSIisjVeBU1ERGQHYo5+iYiIbI8jYCIiIjtgASYiIrIDFmAiIiI7YAEmIiKyAxZgIiIiO2ABJiIisgMWYCIiIjtgASYiIrIDFmAiIiI7YAEmIiKyAxZgIiIiO2ABJiIisgMxcOckwuZgDnOYwxzmMIc5wohUKpVU/YM5kxFrrpQ5zGEOc5jDHOboJ1Y3MmelmsszhznMYQ5zmMMcw0ScD5iIiMj2eBEWERGRHbAAExER2QELMBERkR2wABMREdkBCzAREZEdsAATERHZgYu9O2BJVfmlgtt6hwdasSdERET6OXUBNqbgGlqWBZmIiGzJ6QqwOUVXaC6LMRERWZtTFGBrFV0h62MxJiIia3D4i7BsXXwdbf1ERNQ8OewI2JEKn7ovHA0TEZGlOOQI2JGKryZH7RcRETkfhxoBO0OB42iYiIgsQQzcOYmwOczJcYbiq8mU/jrCfmYOc5jDHOY4Ro5IpVJJ1T+YMxmx5kqNzXG24qtJ6EjYnP3DHOYwhznMaX45YnUjc1aquXxLKr6A8P7bez8zhznMYQ5zHCtHFDM7UWXOCs3h7MVXE88JG2dkj36Y1H8k4jp0hr+3LwDg2o0KnM4/j18P7cTuU0ft20EiIiuzWwFuTsVXjUXYMIlYjPenv4TxCUP1tktJ34vXvv4ICqXSRj0jIrItu9yG1ByLL9B8t8uSHhoyzmDxBYDxCUMxZfA9NugREZF9OOR9wNR83T9glOC2kweOtmJPiIjsy+YFuLmPEpv79pmrU7twwW2jgttbsSdERPZl0wdxtJTiVJVf6lDng10lLujZsRt6dOiMLqERaB8QjEBfP7T28ILUzQ0SsQQKpQLVslrcqK1GaWU58q9eQXZRHk5eOofMvPOoVzRYpC9ikciItjxAQ0TNl0M9CYssRyQSYUDXuzBpwCgMj+sDT3ep3vYSsQStPb3Q2tMLYf5BiI+Kvv1eVW0N9pxOwy+HdiAt5zRUKtOv27tUWiR4ZHuxpMDk9ZBpwpOiDbaRV8pQvCfXBr0hat5sVoBbyuhXzZ6j4MEx8Xj5vmnoFhZpkTxvD09M7DMME/sMw9mCXKzY9A32Zx0zKSv58C7MT3pcUNtfDu4waR3kuCQerggd26nJ6yzq1BLZ5BifMxbf/E0Hzc6w9Xa3knpgyRPz8Pnzb1qs+DbWLSwSnz//JpbPXAAfTy+jl/969ybszDhisN3W9H34bm+KKV0kB+ba2t3eXSByGDwErYW6+Kr/G37fQHt2R5AgX3+smfNPm124NLbXIMS0j8KsT95C3tUiwcs1KBR4cc0HGNNzAJL6jURseBTaePkAAMqqKnEqLwfJh3dhl4AiTc7H1cvN3l0gchgswAI4eiH28fTCl3MXIzIozKbrbR8QjLUvvYOpyxeisEz4aF+lUmH78YPYftz8owzkXDgCJvqL1Q9BO9vhZ12Hnk0tvrbY/renzrV58VUL9PHDqmf+DjcXV7usn5yLqxcLMJEaR8AaLHHe19ZGdO+LUT36GbVMrVyGU5dykHf1CspvXkeDQgGpqxsCWvuiU7twRLePMup2oS6hEZgxZhI+++0HY7tPLYxrax6CJlJjAf6TvuLrqIeeAeDZex4U3DYz/wLWbP8JqafTIW+o19nOt5U37us3AjNHT0JA6zaCsmeMmoT1e7agqrZGcH+oZXH1dofYVWLvbhA5DKsWYGc7/KyNJYqvtW5J6hgchrgOnQW1/Xzbj1i15TsoBdzDW1ldha93bcKvh3bgw8fnYVhcgsFlWkk9MDZ+MH46sF1Qf1oKb49Wet5VGfzCIhFLMDimF4bFJaB7h84I9Q+Cl9QTAHBTVoOCayU4nZ+D1NPp2J91HAqlwoK9txyxixhtegTZuxtEDsUFuDWJsLnzIFoyx9Ysfd5XF0vv58HRvQS1/+3Yfny8eb3R/amqrcELa97H588vQv+uPQyuZ2hsb0EFOHNVsuE2+RcwZcl8g+105HvEzkmqlYgl6B7RGT0ju6JraCTCA4IR6OsPH8+/ngBmKbFzkrS+fnhp0/2uViuXIWHewzrfvzdhCF6aOA2h/tq/vPl4esEn3Aux4VF4aPA9KCq/io83f4vNaal6+2rNv+8+XQPuaCOSiODi6QZpUCu9o1+J1KXJstpcP3fNqP6YgjnMsVWOSKVS3X5Ekjkrz1yV7NE4xxlGwLY69Jy/6WCT/WMKzf288cju2sR+Iwwu8+CH85F1+YLOHEP9CW4TgK1vroa7q/7zd0XlVzHmzacN9seaBfjP7YoH8PSNmptPtDbhXmVT6CrA+rZVVwF2d3XDO1Pn4t7eQ0zqy/bjB/HaN/+CTF6nrT96f+9Cn4S184EVWnOELG+O/OQzWl835vOsD3OYY8scsbqRuZXfUjmOwtKjX2vs53ZtDI8YACCnKM+s/hRXXMOmo3sMrifI119Qf6ylS2gEDp49UQvgAACbFV9LcpFIsPKZ10wuvgBwd6+BWP3sP7Remd5c/7472nYxhzlC2otiZiea/mBfPZx59Guti64sfR74vwuWCjoHPGThdJTfvGHWuobG9sanz72h8/2q2hocyc7AvC+XQKFU6s2y9AhYLBLhqbsnY874Ryx6WNkYlhoBvzp5JqaPmGiRPv2wfxsWb/jUqGXMfRa0vUbARM6oxV4F7Yy3HDXWoBB2wc34hGH4Zs9ms9Z1rvDSHT8rlEqcysvBgTPHcfDsCZy6lG2w8FqDRCzGe9NexIQ+w2y+bkvr1TEa04ZPsFjelMFjkZK+F+nnMy2WSUSW0yILsLPectRY+c3rgtq9lDgN2UV5OJKdYfK6yqoqUVBW8mfBPYkj5046xC1HCyfPtErxPZKdgRC/QIT4tbXZqPqV+5+EyIj7r4V4ceJUTFvxmkUzicgyWmQB1sWZii8A5FzJx0gBD+GQurrh33MXY33qFnz++4+oMOFwdINCgbGLZpnSTasZFN0Ljw4bL6htXb0cPx/8A9uOH0R2UR5u1lbDw12KyKAwjOzRF48NG3/79h4AeHrVYiiUCkjEEgS38UeIXyBC/QPRPiAYYf5BCPUPRIhfoMXOe/fpHIceEV0skqUpPioa0WEdcabgosWzicg8La4A2/q8rzWlZZ/GrLHCHsQhFokwbfhEPDhoLLYd24/fjx3A0exTkNXLrdxL6xCJRFgw6UlBbQvKSvDs6reQW1J4x+vVslqczsvB6bwc/Hff7/j8+UXoHBIOAFg16+84U3ARJ3PP4ci5DBSWlSItp2m21NUN7fzMP7c/ZfDYO36+KavBhr2/4Y+Th3Gx+DLq6uUI9PHHwG53Yebd96ND2xDB2eP7DGUBJnJALaoAN4fzvpqO5pzClYqraNemreBlpK5uSOw3Eon9RkJWL8exC1k4dPYk0s9nIuvyBcHnle0tvmP07WKpj0xeh2dWLTY4Y1NJZRme/+xtbPzHSni6SzE0tjeGxvYGcOtiqS1pe/HZ7z+guOLO+1Bl9XLklhSYviEAPNykdxzJOJF7Di//+0OUXi+/o92Viqv4+dAObEnfiyVPzMPou/oLyh8el4D/+3WtWX0USttFUuZe2EXUXNlkPmBLskYRdcbRL3DrQqhPUjaYvLzU1Q0Du/XE/KTH8f3fluDI/32PtS++i5fvm4ZhcQnw9vA0HGInQp7OBQDrU1MET5dYVH4V36U2nYPYw02KBwfdjU3/WHm7KFtS/649IP3zHuusyxfw9KpFTYqvprp6ORZ8tQznr+QLyo8MCkMbr9YW6SsRWY7TFOD8TQebzNNr7PLaOGvxVUs+sgt7TqVZJEvq6oY+nWPx1N2TsfrZ13Hgw2+xfv6HeHbcFESHdbTIOiylUzvDo18A+P3YAaNyt5/Q/dlqJfXAR0+9iohA4Yd/hejXtTuAW6P1l79cgpo6mcFl5A31WPLLV4LXEd3esX5/ROQEBViz8DZ+3ZiM5kqlUmHB2mU4kXvO4tkSsRg9I7ti7vhH8dPC5fht0ad49p4pdn/gBgDBI7qLRh4evlhcqPd9d1c3PH33A0Zl6uLhJkXmqmRMG37rvt+vdiaj4FqJ4OUPnj2BgjJh7TvaabpKItLN4QuwuSPU5nLLkT41dTI8tXIRth03brRnrPC27TB3wqPYvvgLvDv1BYQF2O/h+kqB9xwrjDynLW8wfFHagG53GZUpRF29HF/vNu5ebZVKhX2Z/xPUNtSfEyEQORqHL8CA7kJpzsi2uRRftVq5DPO+XIpX161ASWWZVdflIpEgqf9IpLyxGvOSHjf4jGhr0HeOVJOxXxKEjO6FTtFojH1Zx3Cj5qbRy53K03JpthYBrX2NziYi67JaAbb0YxdNKcKOdN7XGtMRarMlLRXjFj+H935cI/jwpKlcJBLMHD0J38573+aHpU9eEnbIfUT3vkblDhIww1SdFW7d2pd1zKTlLpUKu8DM19PbpHwish6nGAEbYu454uamrl6O9akpuHfxc5i1+i2kpO9Ftcx6z8yPaR+FdS+9Cz9vH6uto7E/ThwS9OjLJ0dPgr+3r6BMqZs7ZoyeZLCdtsktzJVxKduk5RrfFqWLh7u7SflEZD1OVYD1jVyFFtzmduhZH4VSif1Zx/DK2uUYvHA6nlq5CF/tTEa2FQpI+4BgrJj5CiRi23ykCstK8euhHQbb+Xm1xhezFxm8V9rDTYrlMxYgvG07g5n6rpQ2hVKlwsXiyyYte6OmWlA7V0mLuuWfyCk43d/K8PsG6iy2+ZsO6n2/JRXfxuQN9Th07iQOnTuJ//t1Lfy8WiOhcxz6do5DfFQMuoR0MPs5xAmdYjFl8D34fu9WC/Vav6W/rkWvqGhEBbfX265bWCQ2vb4SP+zfhp0Zh3H+ymVUy2rg5uKG8LbBfz7S8l5BDzQpvV6OHw9st9QmAACu3agw+QEoQi4aAwCRyKm+axO1CGLgzkmEzdE4x1rnPS0xEjZF7AvDbv8xhno/WGs/m6L85g2smPmKxzs/fIH7338JA16Ziuc/ewdf796Mi8WmP9npmbEP2GzygpuyGsxc+SYy888bbOvpLsUToxLxzcvv49CSb5Hx8S9IX74Bv7z2EeYnPS6o+DYoFHhl7XKLH86vqhU2itX2ezdlBipH+hxakqNtF3OYY4hY3djclVsqRyhjR7PmjH61FV1jC7Gj7efGOVW11Ug9nY4Pf/4SE9+Zg7GLZmF58jrBF/moBfr4oV+X7uZ0zShXr1fg0WWvYskvX1n16u+aOhnmfvEe0nJOWzxbyEVdjv75MVdseNRxR+gPc5hjyxxx7JykWgBQ/9dUlsoxhtCi6giHnm29nyODQjFzzP06DysbyikoK8GXO37FxLdn45W1y1FeJWzqQwBI6BwruK0lNCgUWLdrI0a/8RSmLJkPAHO/2PYT0nIsMw/u4XMZeOCDedgr8J5bY6lUhts42t9TS/99z8y/YPjycxv0hznMsWWOKGZ2ooC//uapyi+1WrahQ87mFl8ho9zMj1N1vmer24/EIhHiOnTGyB59MapHf3QMvvXko35/exQ3ZebP2xvo44dvXn5f0H21O04exotrPtD5fuaqZIMZmfkX1MXUZNNHTMSrk2eatGy9ogGpp9OxPjUFR7NPmdwHW2yrJddhjYkTOBkDkXZOdxFWY/ouumruXCUu6NMlDqN69MfIHn0R6OPXpE37gGCLTEVXer0c7//8b3wy6x8G2wYIvO3HGjoGh2F4XB/07dIdPSO7Abh1lXHGpWy0bd0G/q19b098ANwqtDV1MpTdqERBWQlyruTj5MWzOJJ9yiJfXIiIdHH6Agw0LcLqnx3h0LM17ftgHbw9Wultk9Ap1mJzwR4+lyGonYvENhdhqUnEYkzoMxzTRkxoMmlEg0KBeV8uwc6MIzbtExnJvAvwiZySTQqwd3igVQ9DA00PNVuq+GZ+nKr3MLQ9Dz8LuW0osf8IfJu6BSohJxoNEAu8TalWXmf2uoQKb9sOy2b8DTHto7S+v3DdChZfO1MpVRCJ9X92JG62/dJG5AhsdnOgrc6FOgpbbG9RmeEvNdFhHTEhYahF1jegq7BJCIrKr1pkfYaE+LXF+nkf6Cy+O04exm/H9tukL6SbSmn4y5/EwxUunq426A2R4+Dd+QJkfpzaZKSr7TVby7x8QVC7Nx9+TmeREsrTXYoX75sqqO2Zy5Y55G3I61Nm6X38pZAvKGR9yroGQe18ovXfi21oFE3kbGxagJ19FKwuuoYKr622U+htMZ7uUvznhbdxT/wgk9YT5OuPNbP/afCJU2r7z5h1S6cgraQeGBLbW2+bR4bdi1ljH0RUcPs7Lrwi22qorhfUrlV7H7Tt3x7Stq0gdhUDIkDsIoabrxStO/mh3SjzvkQSORqbX4Rli/PB9mTLLxl7TqXh2o0KQdPjeXt4YtmMBZg2fCK+3/cb9pxKM3iVb1hAEB4YOAaPDZsAT3epoD6dyD2H3BLTn6QlVCt3D4PnpF0lLnhh4mN4YeJjRucrlErUymW4WVuDsqrruHytGFmXL+DgmRMWu6itpaivqoM0UP/FgmoewV7wCPayco+IHEOzuAq6pZI31OOLbT/h7w8+LXiZnh27oWfHblAolcgpysP5K/kovV4OmbwOYpEYrTw80M43AF1CIwRNTNDYJynfG72MKa7eqEDBtRKj5/sVSiIWw0vqCS+pJ4LbBCA2PAr3xA/CvMTpuFRahK93bcJPB/+AQmnaM5xbkrqyGnhHNb1Fjqils0sBbq6jYHscYt+w7zeMTxiKuyK7GrWcRCxGt7BIdAuLtFhfNqel4uDZExbL00elUmHB2mVYNevvgqcbtJSIwBC8+fCzmDxwDF5c8wGuVNjmojNnVVtaDZVCBZGE53CJNNntIixnPx/cmL22R6FUYt5/lqL0erld1q+WdfkC3trwqU3XmXEpG2MXPYvXvv4IG4/sxtmCXFRWV0FpgVuuhIgNj8K3894XNJFDS6ZqUKK6QPijTC0hPCn69h8iR2XXQ9DNZSRs7y8TxRXX8OS/XseaOYsR4mf7YnDi4lnM/vxd1NTJbL7uWrkMm47uwaaje26/JhKJ4CKWYNc7X+q9StoSgtsEYPnMBXhs2as2K/zO6Ma5a2gV5mP1UbC2gqt+LT/5jFXXTWQsu58DdvYibO/iq3aptAgPLZmPd6a+gGFxCTZZp1KlwrpdG/GvTd+iXiHsVhNr8vbwRPeILugaEoEQv7ZoJfVAVW0N1u5Kxo4Th5FbUmjwnK1YJEJrTy+Et22HPp1iMXnQGHRoG6J3mR4RXTC8e1/s4gM/dGqoqUf5yWL4xxt/XQFRc2X3Agw4bxF2lOKrVn7zBp7/7B2M6tEPcyc8hs4h4VZZj0qlwu5TR7Fyy3fILsqzyjqEkoglGJ8wBPcPGI34qBhIxH+dVSm9Xo6pyxei0Ij7gZUqFSqrq1BZXYWMS9lYn5qCz55/E306x+ld7p74QSzABlTnV0IkEcGvRxAg8KlqxjB0uDk8KZqjYHIoDlGAAecrwo5WfDXtzDiCXaeOom/n7kjsNxzDu/eFj6f5t3bklhTijxOH8Ovhnci/esUCPTVPbHgnfDD9pdszPzX27o9rjCq+2sjq5Vi+8Wt8/7cletvFdehk1npaipu5FZBX1KJNXBDcAzyNW5hH+KmZEcXMTlRlrkr2sMS8npbKceRCbE7htdd+FotE6BzSAd07dEaX0Ai0DwhGsK8/uoRGFNfKZcFuLq6QiCVQKBWQyeWoqq1GWdV1FJWX4lJpIbIL83Ds4hkUV1xzmO0aFN0LK595De46HrBRVVuNQa9Og0KpNLs/bi6uOP7Rj3rbyuR16D3vIb05Jnekmea4ervDM8Qbo4cM/v1Q3ql7JO4uEEluHcFQNiihrGtAQ2096m/Uoa68FrKr1VDKdZ9CEHLBlZARsKPsH+Y0/xyRSqW6/YQFc1aeuSrZw5I54fcNtMhE35ZkbvFV/78j7WdnzAn08cOm11camgkqI3ZOUg9L9Kf/gkdrDy/9Tm97lUqFuLmT9OY42352xpxxO17TmSG0+FqyP8xhjj5idSNzK7+lc7zDAx3mMG/+poMe5vbFUfezM+Y8PjLR4DSMJZVlJhffxv0Z0K2nwfZ19XKDOZbqD3N055jLUbeLOc0zRxQzO9Hhz6zY85C0o3wJoL+kvLkaEYH6r0wGgFmr38L+rGNmrSvI1x/fzf8QwW0C9La7UHwZ970z16x1keVoHo7mhVfkqBzmIix9NIugLYoxi65jC/MX9vjJj556Bau3/hfJh3ei/OYN49YREITxvYfiiVGJaC3gArYTueeMyifrYtElZ+AUBViTtYoxi67zUKqUAAxP4O7hJsX8pMcxL3E6cksKcam0EFdvVKCqphp1DfVQKpUQiURwd3WFp7sHfDy9EOQbgI7BoUY/3vJ3zjtMREZyugKsqXHRNKYgs+A6r4vFBUY9w1okEqFjcJjO25XMdTovB4fOnrRKNhE1X05dgBtjUW0Zth0/YNFJJMwhq5fj9fUroeJjKInISHabjIHIVOtTU1BwrcTe3UBdvRwv//tD5BTl27srROSEWIDJ6VTLajFr9WK7TgN4qbQI01a8hr2Z/7NbH4jIuTnFbUhE2vi28sbLidMxqf+oO54BbU0llWVYuzMZG/b9DnlDvU3WSUTNEwswOb12bdpi0oBRGHNXf3QJjbB4flH5VRw6dxJ/HD+Ig2dPGpxRiYhICBZgalb8vFqje0QXdAmJQERgCILa+CPAuw18W3nDw90dUld3uEhu3cKkUCpRr2hAXf2t51/fqLmJsqrruFJ+FQXXinGhpABnLl9ESWWZnbeKiJojFmAiIiI74EVYREREdsACTEREZAcswERERHbAAkxGWz/vg+93vL1mTSuph/Y5+Cy0jDPLXJW8bNHDz/1h734QkeMSA3dOImwO5tguJ3NV8rLGfw58+M3qZTMWbIkMCi03tz/PjXvo0CNDx53Q9l5bH7+bbbx8atxcXBWNc3Qt13gZY/tjDEvnaNvXuv7Yoj+A/t+PgYxlmauSl/28cMU3+tr9d8HS9fq2qXF/9NHX1+fGPXQoc1XycCE5hjjq54c5zNFFpFKppOofzJmMWHOlzLFJzjtHsjPCfz20Mw4AxGKJsp1fQNXkAWNO+Xh6yR5b/uojOUX5OiexNdSfzFXJy37Yv63H4g2fjmn8Xiuph9zNxVVRcfOGR+McXctpLmNKf4SyRs7CdSvumFR40oBRp/t16ZG/cN2KexsvtzktNfrP5Zf9sH9bjymDx95n6f7o288CcpYBkAGQJr33wuPaPiORQaHlW9745KvrNTelPp5estg5SfMN9cfQOnX19c/+pAHY6Gi/d+Ywx9o5YnUjc1aquTxzbJMDAHmlV3w3p6VGb05Ljd54ZFfsZ7/90P+hJfOnKpQK8bzEx/daqz/Vslo3dSEVmqO5jKX7Y+0c9T5W/8krveIL3Cq2jf/Yoj/m5PzpnExe5zqxz3Ctk+ZO6DPsTK1c5ro38386Z7ywcH8cZv8whzm2zOF9wE5K36hi2YwFW4bExOf2/dsjc9WvSV3dGp6++4Ej4/sMPRviF3i9WlbjfvDsyQ4fb14/KO9qURvNXF3rnLbitYePXTgTuujh5/6YMnhshubIyNByE/sMz2q8jJq7q1vD9BH3/e++vsOzOgS2q5TJ5S4Zednt1mz7ue+R7IxwXdu+53Ra1PPjHjrUNSzyqry+XnLw7IkOy5LXDb18rdhX3VYsEqkeGXrviSmDx56MDAqtqG9okJwtyG371a6NCTtOHOqsq8/6aNt+XX08cOZ4xKx7HjzSNTTiak1dnevBs8c7LEteN6ywrLS1ZvshMfG5M8dMPhrXIarEzcVVcam0qM1PB7Z3/3bPlnilSiXSzNW1TvXvR1/f1f3ydJfW9+kcd3n0G089o5kvEomw7Z+fr0k/nxlWVy930badluirPurtEPqZ1VzfwnUr7nVzcW14cnRSeofA0Iq0nFPtZ3z85oOm9IPI2prVdIR0i0xe5+Lm+te5VjcXV8WXL7z9Y1x4p+KfDv7R/XReTnCQr//NKYPHntywYMl3Dy1d8Fj+1VujOvVh1Q8ef3lrWk5m2M8Ht/dQ51wqbfqPnpqpy7lKXBRfzF70c6+O0YXJR3bFrd2ZnNBK6iGf2Hf4mS/nLv7xjfWrxv56+NZhdk29O8UUJvUfmfnr4Z1xG/b9fldkUGjF1OETjvWM7FaU+O7cJ67X3JQCwEuJ0/fNHD0pLSV9b/TXuzb1buXhKZ+QMOzMv556ddN7P64ZuT41pZdRO9cIfbt0vzxpwKjMXw7tiPsudWtPzT4mvffi4zf+7OOk/qNOvzN17ra0nMyw5Ru/GVLfUC8Z13vwuVcnz9zj4+ktW5ny3SB1pqn7ubGNR3bHTugz7EzfLt0vHz7315ecXh27FYb6B95Y9N0nMXf3GpjdeDlL9dXLw7PuZm2Nu67tMOYzq+mJUUnpEYEhFev3bu154crPAVdvVHgK3SdEtsYC3MxIxGJVfFR0YXbhpdvn9qYNn3CsZ2TXojmfv5e0+9TRKPXrvxzaEbfp9VVrX5w4df/8/yydAPx1DvODx1/emltS4KftsKo2pi43fcTEYwmdYgsWfLVs/Nb/7eumfn196tZen89+85fXH5q1MzUzvWN51fU7/iGNCm5f9swniycfOHM8Qv3aheLL/u9Ne/G3iX2HZ327Z0s8ADwyZNyJXRlHOr2ydvnt87Xr96T0WvrkvJTK6ioprCgiMKTi2dVv3b8v69jtQ7m3+9hn2Bl18e/dKaZwz6m0qDlfvJeknlf4l0M7uv/y2kfrHhx8d4ZmUTN1Pzd2JDsjvPR6udd9fYdnaRbgiX2GZ129XtHqaM6pcG0F2NJ91fXezNGT0oR+ZjV1DY0onbHyzSlHs0+1N2W/ENkSb0NyYu6uroo2Xq1r23i1rvX39q3p3qFz8bIZCzaHt21X+cW2n/qp203oOzwrt6TQ70Tu2RB1+zZerWvrFQ2SYxeyQgdF97xkr22Y0Hd4VnZRXoBm8QUAhVIhXpXy/UCpq1vD3T0H5DRe7vjFM6GaxRcAdmXc+oc6IjC0Qv2aTF7nGhYQXOnt0apOM3vel0snpqTvNal4CXXi4tkQzeKr2cfIoLDbV6q//u3KsfP/s3SCuqDd6qNSlHEpu52/t2+NNfqmUCpFW9JSo8f0HJgtdXOvB24dKbknflD2lvTUaIVSKdK2nK36aupnNv18VhiLLzkLjoCdWGK/kZmJ/UZmar5WfvOGx9+/+de4HScP3z6/GRkUWuEqcVHs/+Dr1dpyNM/b2VpkUGjF1vS93bS9d+byxcBbbcKa3FZ1objAr/FrN2U17gAgEYuV6teWb/x6yOJHZ2/f+/7aT88VXmqbmX8hKCv/fND+M8cjSyrLvCy3JU1dLBHWRwCoVyjEfTrHXe7RoXNxt7COpdHtO5ZGBIYIup3MVJuO7o6ZMXpS2qge/c6npO+NHhqXcLG1p5ds09E9MfqWs0VfTf3Majs3TOSoWICdWOrp9I7f7N4cDwAqqESV1VXSnKL8AIVS0eTIxuFzGeH/3v5zX205DVraOzqllhGa5qhM7dfDO+PSzp9uP/qu/jndO3QpHhrbO/fhIfecbFAoxG//97PRPx38o7u1+tigaLpftfWxW1hk6b+eWrgpLCDoenZRXkBm/vngDft+u2twTPylITHxudbqX05RfsDZgtzAu3sNzElJ3xs9tufA7OyivIDswkttdS1jy76a8pnV9rkgclQswE6spLLM69C5kx0MtcstKWzj59W6VkhbW8stKWwTG96pWNt7seFRJbfaNB1JCuUl9ZQXXCvxWbtzY4L6tRC/tje+mP3Pn19OnL7PmgVYqPenv/QbRMC4xc/N1LywKKb9re23po1HdsW8MPGxA57u0vohsb1zP//9h/6O0FdH/swSWYrTjXzIeFuO7onpEhpxdVz84HOar7u5uCqWzViwZWyvQU0utlGqVCJPd2m9+mexSCTodjVjl9tydE9Mp3bhZfcmDDmr+bqLRKKcO/7RA7J6uct2E28X6tUxunDb4s//ndhvRJbm60XlV1tfuJLv3/gwsL1EBYeVZ1zKbqdZ0Py9fWuGxPbWOaI09ffTWEr6vmg3F7eGueMfPdBK6iFP0XE6wFp91fWeKZ9ZImfDEXAL8M2eLfEjevS98OET81L6d7sr78TFsyHenq3qJvUbmRnVLvyatn90T+flBN/da2B2bkmh3/WaKumk/qNOz/ty6cSCshIffevStZyu9l/v3hw/NC7h4gfTX946oOutvqlvQ4oO61jyxvpVYxtfAS1UbkmBX2llmdd70178bdRd/XMOnT3RQV5fL4mPiikc3XNAjq7Dm7Z2NOd0+7G9BmYXV1zzvlB82b99QHDlAwPHnFKpbh1OnTF6UtqR7IzwzPwLQeplTP39NFZWVem5P+tY5GPDJxxTXxlty77qes+UzyyRs3HJ+mQjH8bRzMkb6iUzVy564MnRSekTEoaduX/A6NO1dTLXYxfPhC7+72ejT1w8G9J4mYXrPhq36JFndzw7bspheX29JC3ntKArS41drl7RIHnmk8WTnxiZ+L8JfYZlJfYbkaV+EMfMlYse1PYgDqEqq6s8Hln26iOPDb33xLiEIWdfnTxzDwDkFhf4vfvjmpEb9m7taWq2Jb3y1bLxr0yeufuBgWNOebp7yHOu5AV8tOnbwWnnT7f/+OnXNr44cer+tzZ8OlqzqJn6+9Fm89E9McPiEi5uNnDxlTX6qus9Uz6zRM5GBAAswERERLbFc8BERER2wAJMRERkB2IAyPpkI++dIyIispGsTzaKOAImIiKyAzEAqFQqqSVGwZqTETOHOcxhDnOYw5ym1PVWrFKppMCtImyJlZq7EcxhDnOYwxzmtIQcsUgkkgGASCSSmTMKjp2TVKv5X+YwhznMYQ5zmHMnzTrbpODynmAiIiLr0CzATS7C4hXRRERElte4vmq9CppFmIiIyHK01VWdtyGxCBMREZlPVz3lfcBERER2oLcAcxRMRERkOn111OAImEWYiIjIeIbqp1HFlbcoERER6Sd04GrUOWCOhomIiHQzpk4afREWizAREVFTxtZHs4opD0kTEVFLZ+rA1CKjWRZiIiJqacw9ImzRw8ksxERE1NxZ6lTs/wO36+TPM3IGFgAAAABJRU5ErkJggg==" alt="SignIt" class="logo-img">
+  <div class="nav-actions">
+    <button class="btn btn-ghost nav-login" onclick="showToast('🔐 Login coming soon!')">Log in</button>
+    <button class="btn btn-primary" onclick="openCreate()">✍️ Start a petition</button>
+  </div>
+</nav>
+
+<!-- ─── HERO ─── -->
+<section class="hero-wrap">
+  <div class="deco-circle deco-circle-1"></div>
+  <div class="deco-circle deco-circle-2"></div>
+  <div class="deco-circle deco-circle-3"></div>
+  <div class="hero-inner">
+    <div class="hero-eyebrow">
+      <span class="dot" style="width:7px;height:7px;border-radius:50%;background:var(--mint);display:inline-block"></span>
+      Built for students · Transparent · Fact-checked
+    </div>
+    <h1>Your voice,<br><em>amplified.</em></h1>
+    <p class="hero-sub">A student petition platform built on truth. Every claim is community-checked and explained in plain language — no noise, no misleading stats.</p>
+    <div class="hero-ctas">
+      <button class="btn btn-primary" style="padding:12px 28px;font-size:15px" onclick="openCreate()">✍️ Start a petition</button>
+      <button class="btn btn-outline" style="padding:12px 28px;font-size:15px" onclick="document.getElementById('petitions').scrollIntoView({behavior:'smooth'})">Browse petitions ↓</button>
+    </div>
+    <div class="trust-row">
+      <div class="trust-badge"><span class="dot"></span> Community fact-checked</div>
+      <div class="trust-badge"><span class="dot"></span> Plain language summaries</div>
+      <div class="trust-badge"><span class="dot"></span> Credible sources required</div>
+    </div>
+  </div>
+</section>
+
+<div class="section-divider"></div>
+
+<!-- ─── HOW IT WORKS ─── -->
+<section class="how-wrap">
+  <div class="section-label">How it works</div>
+  <h2 class="section-heading">Petitions done <em style="font-style:italic;color:var(--accent)">right</em></h2>
+  <div class="steps-grid">
+    <div class="step-card">
+      <span class="step-num">1</span>
+      <div class="step-icon">✍️</div>
+      <div class="step-title">Write your petition</div>
+      <div class="step-desc">Describe the issue, who you're petitioning, and what change you want to see. Include evidence.</div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">2</span>
+      <div class="step-icon">💡</div>
+      <div class="step-title">Explain it simply</div>
+      <div class="step-desc">Every petition needs a plain-language summary anyone can understand — no jargon, no spin.</div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">3</span>
+      <div class="step-icon">🧾</div>
+      <div class="step-title">Community fact-check</div>
+      <div class="step-desc">Readers can add context notes and flag misleading claims, just like community notes on X.</div>
+    </div>
+    <div class="step-card">
+      <span class="step-num">4</span>
+      <div class="step-icon">📣</div>
+      <div class="step-title">Gather signatures</div>
+      <div class="step-desc">Share with classmates, faculty, and the public. Watch your support grow toward your goal.</div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── DIFFERENT ─── -->
+<section class="diff-wrap">
+  <div class="diff-inner">
+    <div class="section-label">Why SignIt?</div>
+    <h2 class="section-heading">Better than the rest</h2>
+    <div class="diff-grid">
+      <div class="diff-item">
+        <div class="diff-icon">🔍</div>
+        <div class="diff-title">Fact-check system</div>
+        <div class="diff-desc">Community notes flag misleading or unverified claims before they spread — keeping petitions honest.</div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon">💬</div>
+        <div class="diff-title">Plain language first</div>
+        <div class="diff-desc">Every petition must include a simple explanation of the issue — written for everyone, not just experts.</div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon">🔗</div>
+        <div class="diff-title">Sources required</div>
+        <div class="diff-desc">Claims must be backed by credible sources. No more petitions built on rumor or bad data.</div>
+      </div>
+      <div class="diff-item">
+        <div class="diff-icon">🎓</div>
+        <div class="diff-title">Built for students</div>
+        <div class="diff-desc">Designed specifically for student advocacy — from school councils to national policy change.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ─── EMPTY PETITIONS ─── -->
+<section class="empty-wrap" id="petitions">
+  <div class="empty-header">
+    <div>
+      <h2 class="empty-title">Active Petitions</h2>
+      <div class="empty-sub">Be the first to start one.</div>
+    </div>
+    <button class="btn btn-primary" onclick="openCreate()">✍️ Start a petition</button>
+  </div>
+
+  <div class="filter-tabs">
+    <button class="tab active">All</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">🔥 Trending</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">🌿 Environment</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">❤️ Health</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">📚 Education</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">⚖️ Justice</button>
+    <button class="tab" onclick="showToast('Filter coming soon!')">🏠 Campus</button>
+  </div>
+
+  <div class="empty-state">
+    <div class="empty-state-inner">
+      <div class="empty-state-icon">📋</div>
+      <h3>No petitions yet</h3>
+      <p>This is where petitions will live once students start creating them. Be the first to raise your voice on an issue that matters to you.</p>
+      <button class="btn btn-primary" style="padding:13px 28px;font-size:15px" onclick="openCreate()">✍️ Create the first petition</button>
+    </div>
+  </div>
+</section>
+
+<!-- ─── CTA ─── -->
+<section class="cta-section">
+  <div class="cta-inner">
+    <h2>Ready to make<br><em>a difference?</em></h2>
+    <p>Start a petition in minutes. Include your sources, write a clear summary, and let the community weigh in. Change starts here.</p>
+    <button class="btn btn-primary" style="padding:14px 32px;font-size:16px" onclick="openCreate()">✍️ Start your petition</button>
+  </div>
+</section>
+
+<!-- ─── FOOTER ─── -->
+<footer>
+  <div class="footer-inner">
+    <div class="footer-logo">Sign<span>It</span></div>
+    <div style="color:rgba(255,255,255,0.3);font-size:12px">Student petitions built on truth.</div>
+    <div class="footer-links">
+      <a href="#">About</a>
+      <a href="#">How it works</a>
+      <a href="#">Privacy</a>
+      <a href="#">Terms</a>
+    </div>
+  </div>
+</footer>
+
+<!-- ─── CREATE MODAL ─── -->
+<div class="modal-overlay" id="createModal" onclick="closeIfOverlay(event,'createModal')">
+  <div class="modal">
+    <div class="modal-header">
+      <h2>Start a petition</h2>
+      <button class="modal-close" onclick="closeModal('createModal')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--text-muted);margin-bottom:20px;line-height:1.6">Your petition includes a plain-language explainer and is open to community fact-checking from day one.</p>
+
+      <div class="form-group">
+        <label class="form-label">Petition title *</label>
+        <input class="form-input" type="text" placeholder="e.g. Ban single-use plastics in school cafeterias" id="newTitle">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Who are you petitioning? *</label>
+        <input class="form-input" type="text" placeholder="e.g. School Administration, Student Council, CHED" id="newTarget">
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Full petition text *</label>
+        <textarea class="form-input" rows="4" placeholder="Explain the issue in detail. Include data, laws, or context that supports your case..." id="newBody"></textarea>
+      </div>
+
+      <div class="explain-box">
+        <div class="explain-label">💡 Plain language summary <span style="font-weight:400;text-transform:none;letter-spacing:0;font-size:11px;opacity:0.7">(required)</span></div>
+        <textarea class="form-input" rows="3" placeholder="Explain the issue simply — as if to a 15-year-old. No jargon. What's wrong, why it matters, what you want." id="newExplain" style="background:white"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Credible sources (URLs, one per line)</label>
+        <textarea class="form-input" rows="2" placeholder="https://www.deped.gov.ph/...&#10;https://www.who.int/..." id="newSources"></textarea>
+        <div style="font-size:12px;color:var(--text-muted);margin-top:5px">Adding sources boosts your petition's credibility score.</div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Category</label>
+        <select class="form-input" id="newCategory">
+          <option>Education</option>
+          <option>Environment</option>
+          <option>Health</option>
+          <option>Justice</option>
+          <option>Campus Life</option>
+          <option>Housing</option>
+          <option>Other</option>
+        </select>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-ghost" onclick="closeModal('createModal')">Cancel</button>
+        <button class="btn btn-primary" onclick="submitPetition()">🚀 Publish petition</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+function openCreate() {
+  document.getElementById('createModal').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+function closeIfOverlay(e, id) {
+  if (e.target === document.getElementById(id)) closeModal(id);
+}
+
+function submitPetition() {
+  const title = document.getElementById('newTitle').value.trim();
+  const explain = document.getElementById('newExplain').value.trim();
+  if (!title) { showToast('⚠️ Please enter a petition title'); return; }
+  if (!explain) { showToast('⚠️ A plain language summary is required'); return; }
+  closeModal('createModal');
+  showToast('🚀 Petition published! Share it to gather signatures.');
+}
+
+let toastTimer;
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 3200);
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closeModal('createModal');
+});
+</script>
+</body>
+</html>
